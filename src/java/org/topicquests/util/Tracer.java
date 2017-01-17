@@ -1,137 +1,130 @@
-/*
- * Copyright 2013, TopicQuests
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions
- * and limitations under the License.
- */
 package org.topicquests.util;
-import java.io.*;
-import java.util.*;
+
 import org.nex.util.DateUtil;
-/**
- * @author park
- *
- */
+
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Tracer extends Thread {
 	private LoggingPlatform log;
 	private String fileName;
-	private List<Long>timestamps;
-	private List<String>messages;
+	private List<Long> timestamps;
+	private List<String> messages;
 	private boolean isRunning = true;
 	private PrintWriter out;
 	private TextFileHandler handler;
-	private long lineCount = 0;
-	private long flushCount = 100;
-	private long maxLineCount = 100000;
-	
-	
+	private long lineCount = 0L;
+	private long flushCount = 100L;
+	private long maxLineCount = 100000L;
+
 	public Tracer(String agentName, LoggingPlatform p) {
-		log = p;
-		fileName = agentName;
-		timestamps = new ArrayList<Long>();
-		messages = new ArrayList<String>();
-		handler = new TextFileHandler();
-		createFile();
-		isRunning = true;
-		lineCount = 0;
+		this.log = p;
+		this.fileName = agentName;
+		this.timestamps = new ArrayList();
+		this.messages = new ArrayList();
+		this.handler = new TextFileHandler();
+		this.createFile();
+		this.isRunning = true;
+		this.lineCount = 0L;
 		this.start();
 	}
 
 	private void createFile() {
 		try {
-			if (out != null) {
-				out.flush();
-				out.close();
+			if (this.out != null) {
+				this.out.flush();
+				this.out.close();
 			}
-			String fname = fileName+DateUtil.defaultTimestamp(System.currentTimeMillis())+".txt.gz";
-System.out.println(fname);
+
+			String fname = this.fileName + DateUtil.defaultTimestamp(System.currentTimeMillis()) + ".txt.gz";
+			System.out.println(fname);
 			fname = fname.replaceAll(" ", "_");
 			fname = fname.replaceAll(":", "_");
-System.out.println(fname);
-			out = handler.getGZipWriter(fname);
-		} catch (Exception e) {
-			log.logError(e.getMessage(), e);
-			e.printStackTrace();
+			System.out.println(fname);
+			this.out = this.handler.getGZipWriter(fname);
+		} catch (Exception var2) {
+			this.log.logError(var2.getMessage(), var2);
+			var2.printStackTrace();
 		}
+
 	}
-	
+
 	public void shutDown() {
-		synchronized(messages) {
-			isRunning = false;
-			messages.notifyAll();
+		List var1 = this.messages;
+		synchronized (this.messages) {
+			this.isRunning = false;
+			this.messages.notifyAll();
 		}
+
 		try {
-			if (out != null) {
-				out.flush();
-				out.close();
-			}			
-		} catch (Exception e) {
-			log.logError(e.getMessage(), e);
+			if (this.out != null) {
+				this.out.flush();
+				this.out.close();
+			}
+		} catch (Exception var3) {
+			this.log.logError(var3.getMessage(), var3);
 		}
+
 	}
-	
-	/**
-	 *<p> Called by agents sending in trace messages</p>
-	 *<p>Note: if <code>timestamp</code> == 0, then timestamp
-	 * is ignored</p>
-	 * @param timestamp
-	 * @param message
-	 */
+
 	public void trace(long timestamp, String message) {
-		synchronized(messages) {
-			timestamps.add(new Long(timestamp));
-			messages.add(message);
-			messages.notifyAll();
+		List var4 = this.messages;
+		synchronized (this.messages) {
+			this.timestamps.add(new Long(timestamp));
+			this.messages.add(message);
+			this.messages.notifyAll();
 		}
 	}
-	
+
 	public void run() {
 		Long theTime = null;
 		String theMessage = null;
-		while (isRunning) {
-			synchronized(messages) {
-				if (messages.isEmpty()) {
+
+		while (this.isRunning) {
+			List var3 = this.messages;
+			synchronized (this.messages) {
+				if (this.messages.isEmpty()) {
 					try {
-						messages.wait();
-					} catch (Exception e) {}
-				} else if (isRunning && !messages.isEmpty()) {
-					theMessage = messages.remove(0);
-					theTime = timestamps.remove(0);
+						this.messages.wait();
+					} catch (Exception var6) {
+						;
+					}
+				} else if (this.isRunning && !this.messages.isEmpty()) {
+					theMessage = (String) this.messages.remove(0);
+					theTime = (Long) this.timestamps.remove(0);
 				}
 			}
-			if (isRunning && theMessage != null) {
-				handleMessage(theMessage,theTime);
+
+			if (this.isRunning && theMessage != null) {
+				this.handleMessage(theMessage, theTime);
 				theMessage = null;
 				theTime = null;
 			}
 		}
+
 	}
-	
+
 	void handleMessage(String msg, Long t) {
-//		System.out.println("handling "+msg);
 		long tv = t.longValue();
 		String dt = "";
-		if (tv > 0)
-			dt = DateUtil.defaultTimestamp(t.longValue())+" ";
-		out.print(dt+msg+"\n");
-		lineCount++;
-		if ((lineCount % flushCount) == 0) {
+		if (tv > 0L) {
+			dt = DateUtil.defaultTimestamp(t.longValue()) + " ";
+		}
+
+		this.out.print(dt + msg + "\n");
+		++this.lineCount;
+		if (this.lineCount % this.flushCount == 0L) {
 			try {
-				out.flush();
-			} catch (Exception e) {
-				log.logError(e.getMessage(), e);
+				this.out.flush();
+			} catch (Exception var7) {
+				this.log.logError(var7.getMessage(), var7);
 			}
 		}
-		if (lineCount > maxLineCount)
-			createFile();
+
+		if (this.lineCount > this.maxLineCount) {
+			this.createFile();
+		}
+
 	}
 }
