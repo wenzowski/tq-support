@@ -375,29 +375,17 @@ public abstract class DateUtil {
 		Date ret = new Date();
 		SimpleDateFormat char8DateFormat = get8charDateFormat();
 		SimpleDateFormat char6DateFormat = get6charDateFormat();
-		ParsePosition pos;
-		Calendar todayCal;
+		Calendar todayCal = Calendar.getInstance(tz, locale);
+		ParsePosition pos = new ParsePosition(0);
 		if (dateString != null && dateString.length() == 8 && StringUtils.isNumeric(dateString)) {
-			pos = new ParsePosition(0);
 			ret = char8DateFormat.parse(dateString, pos);
-			todayCal = null;
-			Calendar todayCal = Calendar.getInstance();
-			todayCal = Calendar.getInstance(tz, locale);
-			todayCal.setTime(new Date());
-			Date today = todayCal.getTime();
-			if (ret.after(today)) {
-				ret = today;
-			}
 		} else if (dateString != null && dateString.length() == 6 && StringUtils.isNumeric(dateString)) {
-			pos = new ParsePosition(0);
 			ret = char6DateFormat.parse(dateString, pos);
-			todayCal = Calendar.getInstance();
-			todayCal = Calendar.getInstance(tz, locale);
-			todayCal.setTime(new Date());
-			Date today = todayCal.getTime();
-			if (ret.after(today)) {
-				ret = today;
-			}
+		}
+		todayCal.setTime(new Date());
+		Date today = todayCal.getTime();
+		if (ret.after(today)) {
+			ret = today;
 		}
 
 		return ret;

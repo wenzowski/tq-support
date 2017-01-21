@@ -100,7 +100,6 @@ public class TextFileHandler {
 
 	public String readFile(File f) {
 		int size = (int) f.length();
-		int bytesRead = false;
 		this.body = null;
 
 		try {
@@ -143,7 +142,6 @@ public class TextFileHandler {
 
 	public void writeFile(File f, String inBody) {
 		int size = inBody.length();
-		int bytesOut = false;
 		byte[] data = inBody.getBytes();
 
 		try {
