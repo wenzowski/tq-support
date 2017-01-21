@@ -1,4 +1,4 @@
-package org.nex.util;
+package org.topicquests.support.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package org.topicquests.util;
+package org.topicquests.support.util;
 
 import java.io.File;
 

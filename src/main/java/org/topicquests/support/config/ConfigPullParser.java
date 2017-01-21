@@ -1,6 +1,6 @@
-package org.nex.config;
+package org.topicquests.support.config;
 
-import org.topicquests.util.ConfigurationHelper;
+import org.topicquests.support.util.ConfigurationHelper;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;

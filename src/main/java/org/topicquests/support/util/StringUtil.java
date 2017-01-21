@@ -1,4 +1,4 @@
-package org.nex.util;
+package org.topicquests.support.util;
 
 public class StringUtil {
 	public StringUtil() {

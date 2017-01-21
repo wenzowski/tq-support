@@ -1,4 +1,4 @@
-package org.topicquests.common.api;
+package org.topicquests.support.api;
 
 public interface IResult {
 	boolean hasError();

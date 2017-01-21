@@ -1,4 +1,4 @@
-package org.nex.util;
+package org.topicquests.support.util;
 
 import org.apache.commons.lang3.StringUtils;
 

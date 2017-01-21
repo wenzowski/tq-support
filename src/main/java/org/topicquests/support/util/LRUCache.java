@@ -1,4 +1,4 @@
-package org.nex.util;
+package org.topicquests.support.util;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

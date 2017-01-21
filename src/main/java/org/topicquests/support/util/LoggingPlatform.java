@@ -1,4 +1,4 @@
-package org.topicquests.util;
+package org.topicquests.support.util;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;

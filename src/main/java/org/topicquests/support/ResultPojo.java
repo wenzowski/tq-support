@@ -1,6 +1,6 @@
-package org.topicquests.common;
+package org.topicquests.support;
 
-import org.topicquests.common.api.IResult;
+import org.topicquests.support.api.IResult;
 
 public class ResultPojo implements IResult {
 	private String errorString = "";

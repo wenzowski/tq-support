@@ -1,6 +1,6 @@
-package org.topicquests.util;
+package org.topicquests.support.util;
 
-import org.nex.util.DateUtil;
+import org.topicquests.support.util.DateUtil;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
